@@ -4,7 +4,6 @@ import AccountDeletionAlert from '@/app/(app)/dashboard/(components)/alerts/acco
 import JoinDiscordBanner from '@/app/(app)/dashboard/(components)/alerts/join-discord-banner'
 import PastDueBillingAlert from '@/app/(app)/dashboard/(components)/alerts/past-due-billing-alert'
 import SmsPermissionAlert from '@/app/(app)/dashboard/(components)/alerts/sms-permission-alert'
-import UpgradeToProAlert from '@/app/(app)/dashboard/(components)/alerts/upgrade-to-pro-alert'
 import VerifyEmailAlert from '@/app/(app)/dashboard/(components)/alerts/verify-email-alert'
 import UpdateAppNotificationBar from '@/app/(app)/dashboard/(components)/devices/update-app-notification-bar'
 
@@ -24,7 +23,6 @@ export function LegacyAlertStack() {
       <PastDueBillingAlert />
       <SmsPermissionAlert />
       <AccountDeletionAlert />
-      <UpgradeToProAlert />
       <JoinDiscordBanner />
     </>
   )
