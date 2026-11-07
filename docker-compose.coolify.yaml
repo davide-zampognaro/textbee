@@ -1,0 +1,107 @@
+# Compose per il deploy su Coolify (fork di textbee).
+# Differenze rispetto a docker-compose.yaml:
+#  - nessuna porta pubblicata (Traefik di Coolify instrada tramite i domini)
+#  - niente mongo-express
+#  - nessun env_file per l'API: le variabili arrivano dalla UI di Coolify
+#  - la password di MongoDB e' generata da Coolify (SERVICE_PASSWORD_MONGO)
+services:
+  textbee-db:
+    image: mongo:7
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=textbee
+      - MONGO_INITDB_ROOT_PASSWORD=${SERVICE_PASSWORD_MONGO}
+      - MONGO_INITDB_DATABASE=textbee
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - textbee-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  textbee-redis:
+    image: redis:alpine
+    restart: always
+    volumes:
+      - redis_data:/data
+    networks:
+      - textbee-network
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  textbee-api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - PORT=3001
+      - MONGO_URI=mongodb://textbee:${SERVICE_PASSWORD_MONGO}@textbee-db:27017/textbee?authSource=admin
+      - REDIS_URL=redis://textbee-redis:6379
+      - USE_SMS_QUEUE=true
+      - JWT_SECRET=${JWT_SECRET:?}
+      - JWT_EXPIRATION=60d
+      - FRONTEND_URL=${FRONTEND_URL:?}
+      - API_PUBLIC_URL=${API_PUBLIC_URL:?}
+      - APP_PUBLIC_URL=${FRONTEND_URL:?}
+      - EMAIL_LINK_SECRET=${EMAIL_LINK_SECRET:?}
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID:?}
+      - FIREBASE_PRIVATE_KEY_ID=${FIREBASE_PRIVATE_KEY_ID:?}
+      - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY:?}
+      - FIREBASE_CLIENT_EMAIL=${FIREBASE_CLIENT_EMAIL:?}
+      - FIREBASE_CLIENT_ID=${FIREBASE_CLIENT_ID:?}
+      - FIREBASE_CLIENT_C509_CERT_URL=${FIREBASE_CLIENT_C509_CERT_URL:?}
+      - MAIL_HOST=${MAIL_HOST:?}
+      - MAIL_PORT=${MAIL_PORT:?}
+      - MAIL_USER=${MAIL_USER:?}
+      - MAIL_PASS=${MAIL_PASS:?}
+      - MAIL_FROM=${MAIL_FROM:?}
+      - MAIL_REPLY_TO=${MAIL_REPLY_TO:-}
+      - MAIL_FROM_NOTIFICATIONS=${MAIL_FROM:?}
+      - MAIL_REPLY_TO_NOTIFICATIONS=${MAIL_REPLY_TO:-}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:?}
+      - CLOUDFLARE_TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+    depends_on:
+      textbee-db:
+        condition: service_healthy
+    networks:
+      - textbee-network
+
+  textbee-web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    restart: always
+    # NEXT_PUBLIC_* sono incorporate nel build da web/.env (committato nel fork).
+    # I segreti e le variabili lato server arrivano da Coolify.
+    environment:
+      - PORT=3000
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:?}
+      - NEXTAUTH_URL=${FRONTEND_URL:?}
+      - MAIL_HOST=${MAIL_HOST:?}
+      - MAIL_PORT=${MAIL_PORT:?}
+      - MAIL_USER=${MAIL_USER:?}
+      - MAIL_PASS=${MAIL_PASS:?}
+      - MAIL_FROM=${MAIL_FROM:?}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:?}
+    depends_on:
+      - textbee-api
+    networks:
+      - textbee-network
+
+networks:
+  textbee-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  redis_data:
