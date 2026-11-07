@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'textbee.dev - sms gateway - dashboard',
+  title: 'SMS Gateway',
 
   metadataBase: new URL('https://textbee.dev'),
 }

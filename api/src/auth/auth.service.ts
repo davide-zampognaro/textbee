@@ -149,6 +149,13 @@ export class AuthService {
     // time and applied only when this call is what creates the account.
     const isNewUser = !user
 
+    if (!user && process.env.DISABLE_REGISTRATION === 'true') {
+      throw new HttpException(
+        { error: 'Registration is disabled' },
+        HttpStatus.FORBIDDEN,
+      )
+    }
+
     if (!user) {
       user = await this.usersService.create({
         name,
@@ -195,6 +202,13 @@ export class AuthService {
   }
 
   async register(userData: any, requestContext?: RequestContext) {
+    if (process.env.DISABLE_REGISTRATION === 'true') {
+      throw new HttpException(
+        { error: 'Registration is disabled' },
+        HttpStatus.FORBIDDEN,
+      )
+    }
+
     await this.turnstileService.verify(userData.turnstileToken)
 
     const existingUser = await this.usersService.findOne({

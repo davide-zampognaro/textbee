@@ -48,9 +48,11 @@ export default function AuthShell({
           <BrandIcon className='h-8 w-8' />
           <span className='font-semibold tracking-tight'>{BRAND_NAME}</span>
         </Link>
-        <p className='hidden text-sm text-muted-foreground sm:block'>
-          {switchPrompt} {switchLink}
-        </p>
+        {switchLabel && (
+          <p className='hidden text-sm text-muted-foreground sm:block'>
+            {switchPrompt} {switchLink}
+          </p>
+        )}
       </header>
 
       <div className='flex flex-1 flex-col items-center px-4 pb-10 pt-3 sm:justify-center sm:pt-4'>

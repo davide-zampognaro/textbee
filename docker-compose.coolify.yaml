@@ -48,6 +48,8 @@ services:
       - MONGO_URI=mongodb://textbee:${SERVICE_PASSWORD_MONGO}@textbee-db:27017/textbee?authSource=admin
       - REDIS_URL=redis://textbee-redis:6379
       - USE_SMS_QUEUE=true
+      # true = nessuna nuova registrazione. Metti false in Coolify per riaprirla.
+      - DISABLE_REGISTRATION=${DISABLE_REGISTRATION:-true}
       - JWT_SECRET=${JWT_SECRET:?}
       - JWT_EXPIRATION=60d
       - FRONTEND_URL=${FRONTEND_URL:?}

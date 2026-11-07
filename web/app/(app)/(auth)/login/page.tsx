@@ -6,6 +6,9 @@ import AuthShell from '../(components)/auth-shell'
 import LoginForm from '../(components)/login-form'
 import { Routes } from '@/config/routes'
 
+const registrationDisabled =
+  process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === 'true'
+
 export default function LoginPage() {
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect')
@@ -14,8 +17,8 @@ export default function LoginPage() {
     <AuthShell
       title='Welcome back'
       description='Log in to manage your devices and messages.'
-      switchPrompt='New to textbee?'
-      switchLabel='Create an account'
+      switchPrompt='New here?'
+      switchLabel={registrationDisabled ? '' : 'Create an account'}
       switchHref={{
         pathname: Routes.register,
         query: {
