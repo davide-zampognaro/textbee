@@ -2,7 +2,7 @@ import { Routes } from '@/config/routes'
 import { ExternalLinks } from '@/config/external-links'
 import { Activity } from 'lucide-react'
 import Link from 'next/link'
-import Image from 'next/image'
+import { BrandIcon, BRAND_NAME } from '@/components/shared/brand-mark'
 
 // A logged-in user is already converted, so the app footer stays a single slim
 // bar rather than the marketing site's multi-column link farm. It borrows that
@@ -28,15 +28,9 @@ export default function Footer() {
           ragged stack with no common edge to scan down. */}
       <div className='mx-auto flex max-w-7xl flex-col items-start gap-4 px-4 py-6 sm:items-center sm:px-6 md:flex-row md:justify-between lg:px-8'>
         <div className='flex items-center gap-2'>
-          <Image
-            src='/images/logo.png'
-            alt='textbee logo'
-            width={20}
-            height={20}
-            className='h-5 w-5 rounded-full bg-white'
-          />
+          <BrandIcon className='h-5 w-5 rounded-md' iconClassName='h-3 w-3' />
           <span className='text-sm text-muted-foreground'>
-            © {new Date().getFullYear()} textbee.dev
+            © {new Date().getFullYear()} {BRAND_NAME}
           </span>
         </div>
 

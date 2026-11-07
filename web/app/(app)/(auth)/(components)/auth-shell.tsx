@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { BrandIcon, BRAND_NAME } from '@/components/shared/brand-mark'
 import Link, { type LinkProps } from 'next/link'
 
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
@@ -45,19 +45,8 @@ export default function AuthShell({
     <div className='flex min-h-svh flex-col bg-background sm:bg-[radial-gradient(hsl(var(--border))_1px,transparent_1px)] sm:[background-size:22px_22px]'>
       <header className='flex h-14 items-center justify-between gap-4 px-4 sm:h-auto sm:px-8 sm:py-5'>
         <Link href={Routes.landingPage} className='flex items-center gap-2'>
-          <Image
-            src='/images/logo.png'
-            alt=''
-            width={28}
-            height={28}
-            className='h-7 w-7 rounded-full bg-white'
-          />
-          <span className='font-semibold tracking-tight'>
-            text<span className='text-primary'>bee</span>
-            <span className='text-xs font-normal text-muted-foreground'>
-              .dev
-            </span>
-          </span>
+          <BrandIcon className='h-8 w-8' />
+          <span className='font-semibold tracking-tight'>{BRAND_NAME}</span>
         </Link>
         <p className='hidden text-sm text-muted-foreground sm:block'>
           {switchPrompt} {switchLink}
