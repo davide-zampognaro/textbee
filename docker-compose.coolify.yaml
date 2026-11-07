@@ -87,6 +87,9 @@ services:
     # I segreti e le variabili lato server arrivano da Coolify.
     environment:
       - PORT=3000
+      # Next.js standalone si lega a $HOSTNAME (l'id del container): con due reti
+      # puo' risolvere sull'IP sbagliato e Traefik non lo raggiunge (502).
+      - HOSTNAME=0.0.0.0
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:?}
       - NEXTAUTH_URL=${FRONTEND_URL:?}
       - MAIL_HOST=${MAIL_HOST:?}
